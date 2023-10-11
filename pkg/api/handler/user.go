@@ -139,3 +139,42 @@ func (usr *UserHandler) GetUsers(ctx context.Context,req *pb.GetUsersRequest)(*p
 		User:   ProtoUser,
 	}, nil
 }
+
+func (usr *UserHandler) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest)(*pb.DeleteUserResponse,error){
+	if req.Id == 0 {
+		return &pb.DeleteUserResponse{
+			Status: http.StatusBadRequest,
+			Error:  "Invalid ID",
+		}, nil
+	}
+
+	var user domain.Users
+
+	user, err := usr.userUseCase.FindByID(ctx, uint(req.Id))
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return &pb.DeleteUserResponse{
+				Status: http.StatusNotFound,
+				Error:  "Record not found",
+			}, nil
+		} else {
+			return &pb.DeleteUserResponse{
+				Status: http.StatusInternalServerError,
+				Error:  fmt.Sprint(errors.New("unable to fetch user")),
+			}, nil
+		}
+	}
+
+	err=usr.userUseCase.DeleteUser(ctx,req.Id)
+	if err != nil {
+		return &pb.DeleteUserResponse{
+			Status: http.StatusInternalServerError,
+			Error:  fmt.Sprint(errors.New("error in deleting data")),
+		}, nil
+	}
+
+	return &pb.DeleteUserResponse{
+		Status: http.StatusOK,
+		Id:     user.Id,
+	}, nil
+}

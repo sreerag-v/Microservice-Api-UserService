@@ -46,5 +46,20 @@ func (usr *userDatabase) GetUsers(ctx context.Context)([]domain.Users,error){
 	return users,nil
 }
 
+func (usr *userDatabase) FindById(ctx context.Context,Uid uint)(domain.Users,error){
+	var user domain.Users
+	err := usr.DB.First(&user, Uid).Error
+
+	return user, err
+}
+
+func (usr *userDatabase) DeleteUser(ctx context.Context,Uid int64)(error){
+	user := &domain.Users{Id: Uid}
+	err := usr.DB.Delete(user).Error
+	return err
+}
+
+
+
 
 

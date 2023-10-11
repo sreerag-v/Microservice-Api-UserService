@@ -86,3 +86,21 @@ func (usr *userUseCase)	GetUsers(ctx context.Context)([]domain.Users,error){
 	return users,nil
 }
 
+func (usr *userUseCase)	FindByID(ctx context.Context,Uid uint)(domain.Users,error){
+	user, err := usr.userRepo.FindById(ctx,Uid)
+	if err!=nil{
+		return domain.Users{},err
+	}
+	return user,nil
+}
+
+func (usr *userUseCase)	DeleteUser(ctx context.Context,Uid int64)(error){
+	err := usr.userRepo.DeleteUser(ctx,Uid)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+
+

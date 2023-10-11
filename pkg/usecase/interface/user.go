@@ -12,4 +12,7 @@ type UserUseCase interface{
 	Validate(ctx context.Context,token string)(string ,error)
 
 	GetUsers(ctx context.Context)([]domain.Users,error)
+
+	FindByID(ctx context.Context,Uid uint)(domain.Users,error)
+	DeleteUser(ctx context.Context,Uid int64)(error)
 }
